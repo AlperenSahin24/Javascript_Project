@@ -1,56 +1,19 @@
-body {
-    font-family: sans-serif;
-    background-color: #f0f0f0;
-    text-align: center;
-}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Projem</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Merhaba GitHub!</h1>
+    <p>Bu benim üniversite projem.</p>
+    <button onclick="mesajGoster()">Bana Tıkla</button>
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.skor-tablosu {
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-
-button {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.grid-alani {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr); 
-    gap: 10px;
-}
-
-.kart {
-    height: 100px;
-    background-color: #333;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 32px;
-    cursor: pointer;
-    border-radius: 5px;
-    user-select: none; 
-}
-
-
-.kart.acik {
-    background-color: #28a745; 
-}
-
-.kart.eslesti {
-    background-color: #6c757d; 
-    cursor: default;
-}
+    <script src="script.js"></script>
+</body>
+</html>
