@@ -1,7 +1,10 @@
+
+const kartIcerik_2x4 = ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D'];
 const kartIcerik_3x4 = ['A', 'B', 'C', 'D', 'E', 'F', 'A', 'B', 'C', 'D', 'E', 'F'];
 const kartIcerik_4x4 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
 const DECKS = {
+    "2x4": kartIcerik_2x4,
     "3x4": kartIcerik_3x4,
     "4x4": kartIcerik_4x4
 };
@@ -21,14 +24,21 @@ class HafizaOyunu {
         this.acikKartlar = [];
         this.eslesenSayisi = 0;
         this.hamle = 0;
-        this.mod = "3x4";
+        this.mod = "2x4";
         this.kilitli = false;
         this.saniye = 0;
         this.zamanlayici = null;
         this.oyunBasladiMi = false;
 
         this.arayuzOlustur();
-        this.baslat("3x4");
+        this.baslat("2x4");
+    }
+
+    modAdi(mod) {
+        if (mod === "2x4") return "Kolay";
+        if (mod === "3x4") return "Orta";
+        if (mod === "4x4") return "Zor";
+        return mod;
     }
 
     arayuzOlustur() {
@@ -38,9 +48,10 @@ class HafizaOyunu {
         document.body.style.justifyContent = "center";
         document.body.style.alignItems = "flex-start";
         document.body.style.background =
-            "radial-gradient(circle at 20% 20%, rgba(47, 0, 255, 0.25), transparent 40%)," +
-            "radial-gradient(circle at 80% 0%, rgba(57, 109, 27, 0.25), transparent 35%)," +
-            "linear-gradient(180deg, #0f172a 0%, #111827 60%, #0b1020 100%)";
+            "linear-gradient(#0b1020, #0b1020)," +
+            "linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)," +
+            "linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)";
+        document.body.style.backgroundSize = "auto, 40px 40px, 40px 40px";
         document.body.style.backgroundAttachment = "fixed";
 
         this.sahne.style.width = '600px';
@@ -78,17 +89,24 @@ class HafizaOyunu {
         this.skorTablosuContainer.style.color = "white";
         this.sahne.appendChild(this.skorTablosuContainer);
 
-        let btn_4x4 = document.createElement('button');
-        btn_4x4.textContent = '4x4 oyun';
-        this.butonStil(btn_4x4);
-        btn_4x4.onclick = () => this.baslat("4x4");
-        this.bilgiPaneli.appendChild(btn_4x4);
+        //Butonlar
+        let btn_2x4 = document.createElement('button');
+        btn_2x4.textContent = 'Kolay (2x4)';
+        this.butonStil(btn_2x4);
+        btn_2x4.onclick = () => this.baslat("2x4");
+        this.bilgiPaneli.appendChild(btn_2x4);
 
         let btn_3x4 = document.createElement('button');
-        btn_3x4.textContent = '3x4 oyun';
+        btn_3x4.textContent = 'Orta (3x4)';
         this.butonStil(btn_3x4);
         btn_3x4.onclick = () => this.baslat("3x4");
         this.bilgiPaneli.appendChild(btn_3x4);
+
+        let btn_4x4 = document.createElement('button');
+        btn_4x4.textContent = 'Zor (4x4)';
+        this.butonStil(btn_4x4);
+        btn_4x4.onclick = () => this.baslat("4x4");
+        this.bilgiPaneli.appendChild(btn_4x4);
 
         let yenileBtn = document.createElement('button');
         yenileBtn.textContent = 'Yeniden Başlat';
@@ -143,6 +161,7 @@ class HafizaOyunu {
         document.getElementById('hamle').textContent = this.hamle;
         this.oyunAlani.innerHTML = '';
 
+
         this.oyunAlani.style.gridTemplateColumns = 'repeat(4, 100px)';
 
         const karisikKartlar = karistir(DECKS[mod]);
@@ -176,13 +195,10 @@ class HafizaOyunu {
         if (this.kilitli || kart.dataset.durum !== "hidden" || this.acikKartlar.length === 2) return;
         if (!this.oyunBasladiMi) this.timerBaslat();
 
-        kart.animate([
-            { transform: 'rotateY(0deg)' },
-            { transform: 'rotateY(180deg)' }
-        ], {
-            duration: 300,
-            iterations: 1
-        });
+        kart.animate(
+            [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(180deg)' }],
+            { duration: 300, iterations: 1 }
+        );
 
         kart.dataset.durum = "open";
         kart.style.backgroundColor = 'white';
@@ -213,7 +229,7 @@ class HafizaOyunu {
             if (this.eslesenSayisi === DECKS[this.mod].length) {
                 this.timerDurdur();
                 setTimeout(() => {
-                    alert(`Tebrikler! Hamle: ${this.hamle} | Süre: ${this.saniye}s`);
+                    alert(`Tebrikler! (${this.modAdi(this.mod)}) Hamle: ${this.hamle} | Süre: ${this.saniye}s`);
                     this.skoruKaydet();
                 }, 400);
             }
@@ -253,8 +269,12 @@ class HafizaOyunu {
     }
 
     skorTablosunuCiz() {
+        const h2x4 = localStorage.getItem('enIyiSkor_2x4') || '-';
+        const s2x4 = localStorage.getItem('enIyiSure_2x4') || '-';
+
         const h3x4 = localStorage.getItem('enIyiSkor_3x4') || '-';
         const s3x4 = localStorage.getItem('enIyiSure_3x4') || '-';
+
         const h4x4 = localStorage.getItem('enIyiSkor_4x4') || '-';
         const s4x4 = localStorage.getItem('enIyiSure_4x4') || '-';
 
@@ -263,12 +283,13 @@ class HafizaOyunu {
             <table style="width:100%; border-collapse:collapse; text-align:center; color:white;">
                 <thead>
                     <tr style="border-bottom:1px solid rgba(255,255,255,0.18);">
-                        <th>Mod</th><th>En İyi Hamle</th><th>En İyi Süre</th>
+                        <th>Zorluk</th><th>En İyi Hamle</th><th>En İyi Süre</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>3x4</strong></td><td>${h3x4}</td><td>${s3x4}s</td></tr>
-                    <tr><td><strong>4x4</strong></td><td>${h4x4}</td><td>${s4x4}s</td></tr>
+                    <tr><td><strong>Kolay (2x4)</strong></td><td>${h2x4}</td><td>${s2x4}s</td></tr>
+                    <tr><td><strong>Orta (3x4)</strong></td><td>${h3x4}</td><td>${s3x4}s</td></tr>
+                    <tr><td><strong>Zor (4x4)</strong></td><td>${h4x4}</td><td>${s4x4}s</td></tr>
                 </tbody>
             </table>
         `;
