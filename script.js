@@ -1,4 +1,3 @@
-
 const kartIcerik_2x4 = ['A', 'B', 'C', 'D', 'A', 'B', 'C', 'D'];
 const kartIcerik_3x4 = ['A', 'B', 'C', 'D', 'E', 'F', 'A', 'B', 'C', 'D', 'E', 'F'];
 const kartIcerik_4x4 = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
@@ -89,7 +88,7 @@ class HafizaOyunu {
         this.skorTablosuContainer.style.color = "white";
         this.sahne.appendChild(this.skorTablosuContainer);
 
-        //Butonlar
+        // Butonlar
         let btn_2x4 = document.createElement('button');
         btn_2x4.textContent = 'Kolay (2x4)';
         this.butonStil(btn_2x4);
@@ -161,7 +160,6 @@ class HafizaOyunu {
         document.getElementById('hamle').textContent = this.hamle;
         this.oyunAlani.innerHTML = '';
 
-
         this.oyunAlani.style.gridTemplateColumns = 'repeat(4, 100px)';
 
         const karisikKartlar = karistir(DECKS[mod]);
@@ -177,9 +175,10 @@ class HafizaOyunu {
             kart.style.alignItems = 'center';
             kart.style.cursor = 'pointer';
             kart.style.borderRadius = '10px';
-
             kart.style.boxShadow = "0 10px 25px rgba(0,0,0,0.25)";
             kart.style.userSelect = "none";
+
+            kart.style.transition = "transform 0.15s linear";
 
             kart.dataset.deger = deger;
             kart.dataset.durum = "hidden";
@@ -193,37 +192,47 @@ class HafizaOyunu {
 
     kartaTikla(kart) {
         if (this.kilitli || kart.dataset.durum !== "hidden" || this.acikKartlar.length === 2) return;
+
         if (!this.oyunBasladiMi) this.timerBaslat();
 
-        kart.animate(
-            [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(180deg)' }],
-            { duration: 300, iterations: 1 }
-        );
+        kart.style.transform = "rotateY(90deg)";
+
+        setTimeout(() => {
+            kart.style.backgroundColor = 'white';
+            kart.style.color = 'black';
+            kart.style.border = '2px solid #333';
+            kart.textContent = kart.dataset.deger;
+
+            kart.style.transform = "rotateY(0deg)";
+        }, 150);
 
         kart.dataset.durum = "open";
-        kart.style.backgroundColor = 'white';
-        kart.style.color = 'black';
-        kart.style.border = '2px solid #333';
-        kart.textContent = kart.dataset.deger;
         this.acikKartlar.push(kart);
 
         if (this.acikKartlar.length === 2) {
             this.hamle++;
             document.getElementById('hamle').textContent = this.hamle;
-            this.kontrolEt();
+
+            setTimeout(() => {
+                this.kontrolEt();
+            }, 200);
         }
     }
 
     kontrolEt() {
         const [k1, k2] = this.acikKartlar;
+
         if (k1.dataset.deger === k2.dataset.deger) {
             this.eslesenSayisi += 2;
+
             k1.dataset.durum = "matched";
             k2.dataset.durum = "matched";
+
             k1.style.backgroundColor = '#4CAF50';
             k2.style.backgroundColor = '#4CAF50';
             k1.style.color = 'white';
             k2.style.color = 'white';
+
             this.acikKartlar = [];
 
             if (this.eslesenSayisi === DECKS[this.mod].length) {
@@ -241,13 +250,17 @@ class HafizaOyunu {
 
             setTimeout(() => {
                 [k1, k2].forEach(k => {
-                    k.style.transition = "transform 0.3s ease, background-color 0.3s ease";
-                    k.style.transform = "rotateY(0deg)";
-                    k.dataset.durum = "hidden";
-                    k.style.backgroundColor = '#333';
-                    k.style.color = 'white';
-                    k.style.border = 'none';
-                    k.textContent = '?';
+                    k.style.transform = "rotateY(90deg)";
+
+                    setTimeout(() => {
+                        k.dataset.durum = "hidden";
+                        k.style.backgroundColor = '#333';
+                        k.style.color = 'white';
+                        k.style.border = 'none';
+                        k.textContent = '?';
+
+                        k.style.transform = "rotateY(0deg)";
+                    }, 150);
                 });
 
                 this.acikKartlar = [];
